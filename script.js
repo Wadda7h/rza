@@ -677,7 +677,7 @@ async function loadPremiumCategories(skipPush = false) {
         if (categories.length === 0) {
             container.innerHTML = `
                 <div class="empty-state" style="margin: 20px; padding: 40px; text-align: center;">
-                    <i class="material-symbols-outlined" style="font-size:48px; color:var(--danger); margin-bottom:15px; display:block;">error</i>
+                    <i class="fa--xf fas fa-exclamation-triangle" style="font-size:48px; color:var(--danger); margin-bottom:15px; display:block;"></i>
                     <h3 style="font-size:18px; margin-bottom:10px;">عذراً، لا توجد أقسام لعرضها!</h3>
                     <p style="color:var(--text-muted);">تأكد من إنشاء أقسام في المنتدى، أو أنك تملك صلاحية رؤيتها.</p>
                 </div>
@@ -698,8 +698,8 @@ async function loadPremiumCategories(skipPush = false) {
                 let id = 0; 
                 if (url.indexOf('/f') !== -1) id = parseInt(url.split('/f')[1].split('-')[0]);
                 let isLocked = forumEl.classList.contains('forum_locked') || String(forumEl.className).includes('locked') || forumEl.querySelector('img[src*="locked"]');
-                let lockBadge = isLocked ? '<span style="background:var(--danger); color:#fff; padding:2px 8px; border-radius:6px; font-size:12px; margin-left:8px; display:inline-flex; align-items:center; gap:3px;"><i class="material-symbols-outlined" style="font-size:14px;">lock</i> مغلق</span>' : '';
-                let nodeIcon = isLocked ? 'lock' : 'forum';
+                let lockBadge = isLocked ? '<span style="background:var(--danger); color:#fff; padding:2px 8px; border-radius:6px; font-size:12px; margin-left:8px; display:inline-flex; align-items:center; gap:3px;"><i class="fa--xf fas fa-lock" style="font-size:14px;"></i> مغلق</span>' : '';
+                let nodeIcon = isLocked ? 'fas fa-lock' : 'far fa-comments';
                 let descNode = forumEl.querySelector('.forum-description p, .forum-desc');
                 let desc = descNode ? descNode.textContent.trim() : '';
                 let subforumsHTML = '';
@@ -708,7 +708,12 @@ async function loadPremiumCategories(skipPush = false) {
                     const sName = sub.textContent.trim();
                     const sHref = sub.getAttribute('href') || '';
                     if (sName) { 
-                        subforumsHTML += `<a href="${sHref}" data-route="forum" class="subforum-link"><i class="material-symbols-outlined" style="font-size:16px;">subdirectory_arrow_left</i> ${sName}</a>`; 
+                        subforumsHTML += `
+                        <li>
+                            <a href="${sHref}" data-route="forum" class="subNodeLink subNodeLink--forum">
+                                <i class="fa--xf fas fa-level-up-alt fa-flip-horizontal" aria-hidden="true" style="margin-left:4px; opacity:0.6;"></i>${sName}
+                            </a>
+                        </li>`; 
                     }
                 });
                 
@@ -756,77 +761,127 @@ async function loadPremiumCategories(skipPush = false) {
                         }
                     }
                 }
-                if (nodeIcon === 'forum') { 
-                    const icons = ['forum', 'chat', 'memory', 'router', 'public', 'bolt', 'terminal', 'code_blocks']; 
-                    nodeIcon = icons[fIdx % icons.length]; 
-                }
                 
                 let lastPostBlock = isCategoryEmpty ? `
-                    <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--text-muted); font-weight: 800; font-size: 14px; gap: 8px;">
-                        <i class="material-symbols-outlined">info</i> لا توجد مواضيع
-                    </div>` : `
-                    <div class="lp-icon" style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; background: rgba(0, 229, 255, 0.05); flex-shrink: 0; padding: 0;">
-                        <img src="${lpAvatar}" alt="avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="node-extra-row">لا توجد مواضيع</div>
+                ` : `
+                    <div class="node-extra-icon">
+                        <a href="javascript:void(0)" class="avatar avatar--xs"><img src="${lpAvatar}" alt="avatar" /></a>
                     </div>
-                    <div class="lp-info" style="justify-content: center;">
-                        <a href="${lpTopicUrl}" data-route="topic" class="lp-title" style="font-weight: 800; color: var(--text-strong); font-size: 14px; text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-strong)'">${lpTitle}</a>
-                        <span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; font-size: 13px; color: var(--text-muted);">
-                            <span style="display: flex; align-items: center; gap: 4px;">
-                                <i class="material-symbols-outlined" style="font-size: 15px;">person</i> 
-                                <span style="display:inline-flex; align-items:center; cursor:default;">${lpUser}</span>
-                            </span>
-                            <span style="color: var(--border);">|</span>
-                            <span style="display: flex; align-items: center; gap: 4px;">
-                                <i class="material-symbols-outlined" style="font-size: 15px;">calendar_month</i> ${lpTime}
-                            </span>
-                        </span>
-                    </div>`;
+                    <div class="node-extra-row">
+                        <a href="${lpTopicUrl}" data-route="topic" class="node-extra-title" title="${lpTitle}">${lpTitle}</a>
+                    </div>
+                    <div class="node-extra-row">
+                        <ul class="listInline listInline--bullet">
+                            <li><time class="node-extra-date">${lpTime}</time></li>
+                            <li class="node-extra-user"><span class="username">${lpUser}</span></li>
+                        </ul>
+                    </div>
+                `;
+
                 forumsHTML += `
-                    <div class="node-row">
-                        <div class="node-icon">
-                            <i class="material-symbols-outlined">${nodeIcon}</i>
-                        </div>
-                        <div class="node-main">
-                            <a href="${url}" data-route="forum" class="node-title">${lockBadge}${name}</a>
-                            <div class="node-desc">${desc}</div>
-                            ${subforumsHTML ? `
-                                <div class="subforums-wrapper">
-                                    <div class="subforums-label clickable-header" onclick="event.stopPropagation(); toggleFlipSection(this, true)">
-                                        <i class="material-symbols-outlined" style="font-size: 18px;">account_tree</i> الأقسام الفرعية 
-                                        <i class="material-symbols-outlined flip-icon" style="font-size: 18px;">expand_more</i>
+                    <div class="node node--id${id} node--depth2 node--forum ${isLocked ? 'node--locked' : 'node--read'}">
+                        <div class="node-body">
+                            <span class="node-icon" aria-hidden="true">
+                                <i class="fa--xf ${nodeIcon}"></i>
+                            </span>
+                            <div class="node-main js-nodeMain">
+                                <h3 class="node-title">
+                                    <a href="${url}" data-route="forum">${lockBadge}${name}</a>
+                                </h3>
+                                <div class="node-description">${desc}</div>
+                                ${subforumsHTML ? `
+                                    <div class="node-subNodesFlat">
+                                        <span class="node-subNodesLabel">الأقسام الفرعية:</span>
+                                        <ol class="node-subNodeFlatList">${subforumsHTML}</ol>
                                     </div>
-                                    <div class="subforums-list" style="display: none;">${subforumsHTML}</div>
+                                ` : ''}
+                                <div class="node-meta">
+                                    <div class="node-statsMeta">
+                                        <dl class="pairs pairs--inline"><dt>المواضيع</dt><dd>${topics}</dd></dl>
+                                        <dl class="pairs pairs--inline"><dt>المشاركات</dt><dd>${posts}</dd></dl>
+                                    </div>
                                 </div>
-                            ` : ''}
-                        </div>
-                        <div class="node-stats">
-                            <span>المواضيع: <strong>${topics}</strong></span>
-                            <span>المشاركات: <strong>${posts}</strong></span>
-                        </div>
-                        <div class="node-lastpost" style="width: 290px; justify-content: ${isCategoryEmpty ? 'center' : 'flex-start'};">
-                            ${lastPostBlock}
+                            </div>
+                            <div class="node-stats">
+                                <dl class="pairs pairs--rows"><dt>المواضيع</dt><dd>${topics}</dd></dl>
+                                <dl class="pairs pairs--rows"><dt>المشاركات</dt><dd>${posts}</dd></dl>
+                            </div>
+                            <div class="node-extra">
+                                ${lastPostBlock}
+                            </div>
                         </div>
                     </div>`;
             });
             if (forumsHTML) {
                 finalHTML += `
-                    <div class="category-block">
-                        <div class="category-header clickable-header" onclick="toggleFlipSection(this, false)" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                            <div style="display: flex; align-items: center; gap: 8px;">
-                                <i class="material-symbols-outlined">dashboard</i> ${catTitle}
+                    <div class="block block--category block--category${index+1} collapsible-nodes">
+                        <div class="block-container">
+                            <h2 class="block-header">
+                                <div class="block-header--left">
+                                    <a href="javascript:void(0)">${catTitle}</a>
+                                </div>
+                            </h2>
+                            <div class="block-body block-body--collapsible is-active">
+                                ${forumsHTML}
                             </div>
-                            <i class="material-symbols-outlined flip-icon">expand_less</i>
                         </div>
-                        <div class="node-list">${forumsHTML}</div>
                     </div>`;
             }
         });
-        container.innerHTML = finalHTML;
+        
+        let sidebarHTML = `
+            <div class="p-body-sidebarCol">
+                <div class="p-body-sidebar">
+                    <div class="block" data-widget-key="forum_overview_members_online">
+                        <div class="block-container">
+                            <h3 class="block-minorHeader">الأعضاء المتواجدون الآن</h3>
+                            <div class="block-body block-row">
+                                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">
+                                    المتواجدون الآن: 1 (الأعضاء: 1, الزوار: 0)
+                                </p>
+                                <a href="javascript:void(0)" class="username" style="color: var(--primary); font-weight: bold; font-size: 13px;">${window.currentUserIsGuest ? 'زائر' : 'عضو'}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="block" data-widget-key="forum_overview_forum_statistics">
+                        <div class="block-container">
+                            <h3 class="block-minorHeader">إحصائيات المنتدى</h3>
+                            <div class="block-body block-row">
+                                <dl class="pairs pairs--justified">
+                                    <dt>المواضيع</dt>
+                                    <dd>0</dd>
+                                </dl>
+                                <dl class="pairs pairs--justified">
+                                    <dt>المشاركات</dt>
+                                    <dd>0</dd>
+                                </dl>
+                                <dl class="pairs pairs--justified">
+                                    <dt>الأعضاء</dt>
+                                    <dd>0</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = `
+            <div class="p-body-main p-body-main--withSidebar">
+                <div class="p-body-content">
+                    <div class="p-body-pageContent">
+                        ${finalHTML}
+                    </div>
+                </div>
+                ${sidebarHTML}
+            </div>
+        `;
         enforceGroupIcons();
     } catch (e) {
         container.innerHTML = `
             <div class="empty-state" style="margin: 20px; padding: 40px; text-align: center;">
-                <i class="material-symbols-outlined" style="font-size:48px; color:var(--danger); margin-bottom:15px; display:block;">wifi_off</i>
+                <i class="fa--xf fas fa-wifi" style="font-size:48px; color:var(--danger); margin-bottom:15px; display:block;"></i>
                 <h3 style="font-size:18px;">خطأ في الإتصال بالخادم</h3>
             </div>
         `;
