@@ -708,12 +708,7 @@ async function loadPremiumCategories(skipPush = false) {
                     const sName = sub.textContent.trim();
                     const sHref = sub.getAttribute('href') || '';
                     if (sName) { 
-                        subforumsHTML += `
-                        <li>
-                            <a href="${sHref}" data-route="forum" class="subNodeLink subNodeLink--forum">
-                                <i class="fa--xf fas fa-level-up-alt fa-flip-horizontal" aria-hidden="true" style="margin-left:4px; opacity:0.6;"></i>${sName}
-                            </a>
-                        </li>`; 
+                        subforumsHTML += `<a href="${sHref}" data-route="forum" class="subforum-link"><i class="fa--xf fas fa-level-up-alt fa-flip-horizontal" style="font-size:14px; opacity:0.7; margin-left:4px;"></i> ${sName}</a>`; 
                     }
                 });
                 
@@ -761,118 +756,99 @@ async function loadPremiumCategories(skipPush = false) {
                         }
                     }
                 }
+                if (nodeIcon === 'far fa-comments') { 
+                    const icons = ['far fa-comments', 'far fa-comment-dots', 'fas fa-microchip', 'fas fa-network-wired', 'fas fa-globe', 'fas fa-bolt', 'fas fa-terminal', 'fas fa-code']; 
+                    nodeIcon = icons[fIdx % icons.length]; 
+                }
                 
                 let lastPostBlock = isCategoryEmpty ? `
-                    <div class="node-extra-row">لا توجد مواضيع</div>
-                ` : `
-                    <div class="node-extra-icon">
-                        <a href="javascript:void(0)" class="avatar avatar--xs"><img src="${lpAvatar}" alt="avatar" /></a>
+                    <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--text-muted); font-weight: 800; font-size: 14px; gap: 8px;">
+                        <i class="fa--xf fas fa-info-circle"></i> لا توجد مواضيع
+                    </div>` : `
+                    <div class="lp-icon" style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 2px solid var(--primary); display: flex; align-items: center; justify-content: center; background: rgba(0, 229, 255, 0.05); flex-shrink: 0; padding: 0;">
+                        <img src="${lpAvatar}" alt="avatar" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-                    <div class="node-extra-row">
-                        <a href="${lpTopicUrl}" data-route="topic" class="node-extra-title" title="${lpTitle}">${lpTitle}</a>
-                    </div>
-                    <div class="node-extra-row">
-                        <ul class="listInline listInline--bullet">
-                            <li><time class="node-extra-date">${lpTime}</time></li>
-                            <li class="node-extra-user"><span class="username">${lpUser}</span></li>
-                        </ul>
-                    </div>
-                `;
+                    <div class="lp-info" style="justify-content: center;">
+                        <a href="${lpTopicUrl}" data-route="topic" class="lp-title" style="font-weight: 800; color: var(--text-strong); font-size: 14px; text-decoration: none; transition: 0.3s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-strong)'">${lpTitle}</a>
+                        <span style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; font-size: 13px; color: var(--text-muted);">
+                            <span style="display: flex; align-items: center; gap: 4px;">
+                                <i class="fa--xf fas fa-user" style="font-size: 12px;"></i> 
+                                <span style="display:inline-flex; align-items:center; cursor:default;">${lpUser}</span>
+                            </span>
+                            <span style="color: var(--border);">|</span>
+                            <span style="display: flex; align-items: center; gap: 4px;">
+                                <i class="fa--xf far fa-calendar-alt" style="font-size: 12px;"></i> ${lpTime}
+                            </span>
+                        </span>
+                    </div>`;
 
                 forumsHTML += `
-                    <div class="node node--id${id} node--depth2 node--forum ${isLocked ? 'node--locked' : 'node--read'}">
-                        <div class="node-body">
-                            <span class="node-icon" aria-hidden="true">
-                                <i class="fa--xf ${nodeIcon}"></i>
-                            </span>
-                            <div class="node-main js-nodeMain">
-                                <h3 class="node-title">
-                                    <a href="${url}" data-route="forum">${lockBadge}${name}</a>
-                                </h3>
-                                <div class="node-description">${desc}</div>
-                                ${subforumsHTML ? `
-                                    <div class="node-subNodesFlat">
-                                        <span class="node-subNodesLabel">الأقسام الفرعية:</span>
-                                        <ol class="node-subNodeFlatList">${subforumsHTML}</ol>
+                    <div class="node-row" data-id="${id}">
+                        <div class="node-icon">
+                            <i class="fa--xf ${nodeIcon}"></i>
+                        </div>
+                        <div class="node-main">
+                            <a href="${url}" data-route="forum" class="node-title">${lockBadge}${name}</a>
+                            <div class="node-desc">${desc}</div>
+                            ${subforumsHTML ? `
+                                <div class="subforums-wrapper">
+                                    <div class="subforums-label clickable-header" onclick="event.stopPropagation(); toggleFlipSection(this, true)">
+                                        <i class="fa--xf fas fa-sitemap" style="font-size: 14px;"></i> الأقسام الفرعية 
+                                        <i class="fa--xf fas fa-chevron-down flip-icon" style="font-size: 12px; transition: 0.3s;"></i>
                                     </div>
-                                ` : ''}
-                                <div class="node-meta">
-                                    <div class="node-statsMeta">
-                                        <dl class="pairs pairs--inline"><dt>المواضيع</dt><dd>${topics}</dd></dl>
-                                        <dl class="pairs pairs--inline"><dt>المشاركات</dt><dd>${posts}</dd></dl>
-                                    </div>
+                                    <div class="subforums-list" style="display: none;">${subforumsHTML}</div>
                                 </div>
-                            </div>
-                            <div class="node-stats">
-                                <dl class="pairs pairs--rows"><dt>المواضيع</dt><dd>${topics}</dd></dl>
-                                <dl class="pairs pairs--rows"><dt>المشاركات</dt><dd>${posts}</dd></dl>
-                            </div>
-                            <div class="node-extra">
-                                ${lastPostBlock}
-                            </div>
+                            ` : ''}
+                        </div>
+                        <div class="node-stats">
+                            <span>المواضيع: <strong>${topics}</strong></span>
+                            <span>المشاركات: <strong>${posts}</strong></span>
+                        </div>
+                        <div class="node-lastpost" style="width: 290px; justify-content: ${isCategoryEmpty ? 'center' : 'flex-start'};">
+                            ${lastPostBlock}
                         </div>
                     </div>`;
             });
             if (forumsHTML) {
                 finalHTML += `
-                    <div class="block block--category block--category${index+1} collapsible-nodes">
-                        <div class="block-container">
-                            <h2 class="block-header">
-                                <div class="block-header--left">
-                                    <a href="javascript:void(0)">${catTitle}</a>
-                                </div>
-                            </h2>
-                            <div class="block-body block-body--collapsible is-active">
-                                ${forumsHTML}
+                    <div class="category-block">
+                        <div class="category-header clickable-header" onclick="toggleFlipSection(this, false)" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fa--xf fas fa-layer-group"></i> ${catTitle}
                             </div>
+                            <i class="fa--xf fas fa-chevron-up flip-icon" style="transition: 0.3s;"></i>
                         </div>
+                        <div class="node-list">${forumsHTML}</div>
                     </div>`;
             }
         });
         
         let sidebarHTML = `
-            <div class="p-body-sidebarCol">
-                <div class="p-body-sidebar">
-                    <div class="block" data-widget-key="forum_overview_members_online">
-                        <div class="block-container">
-                            <h3 class="block-minorHeader">الأعضاء المتواجدون الآن</h3>
-                            <div class="block-body block-row">
-                                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">
-                                    المتواجدون الآن: 1 (الأعضاء: 1, الزوار: 0)
-                                </p>
-                                <a href="javascript:void(0)" class="username" style="color: var(--primary); font-weight: bold; font-size: 13px;">${window.currentUserIsGuest ? 'زائر' : 'عضو'}</a>
-                            </div>
-                        </div>
+            <div class="sidebar-wrapper">
+                <div class="sidebar-block glass-panel">
+                    <h3 class="sidebar-header"><i class="fa--xf fas fa-users"></i> الأعضاء المتواجدون الآن</h3>
+                    <div class="sidebar-content">
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">
+                            المتواجدون الآن: 1 (الأعضاء: 1, الزوار: 0)
+                        </p>
+                        <a href="javascript:void(0)" class="username" style="color: var(--primary); font-weight: bold; font-size: 13px;">${window.currentUserIsGuest ? 'زائر' : 'عضو'}</a>
                     </div>
-                    <div class="block" data-widget-key="forum_overview_forum_statistics">
-                        <div class="block-container">
-                            <h3 class="block-minorHeader">إحصائيات المنتدى</h3>
-                            <div class="block-body block-row">
-                                <dl class="pairs pairs--justified">
-                                    <dt>المواضيع</dt>
-                                    <dd>0</dd>
-                                </dl>
-                                <dl class="pairs pairs--justified">
-                                    <dt>المشاركات</dt>
-                                    <dd>0</dd>
-                                </dl>
-                                <dl class="pairs pairs--justified">
-                                    <dt>الأعضاء</dt>
-                                    <dd>0</dd>
-                                </dl>
-                            </div>
-                        </div>
+                </div>
+                <div class="sidebar-block glass-panel">
+                    <h3 class="sidebar-header"><i class="fa--xf fas fa-chart-bar"></i> إحصائيات المنتدى</h3>
+                    <div class="sidebar-content">
+                        <div class="stat-row"><span>المواضيع</span><strong>0</strong></div>
+                        <div class="stat-row"><span>المشاركات</span><strong>0</strong></div>
+                        <div class="stat-row"><span>الأعضاء</span><strong>0</strong></div>
                     </div>
                 </div>
             </div>
         `;
 
         container.innerHTML = `
-            <div class="p-body-main p-body-main--withSidebar">
-                <div class="p-body-content">
-                    <div class="p-body-pageContent">
-                        ${finalHTML}
-                    </div>
+            <div class="layout-main">
+                <div class="layout-content">
+                    ${finalHTML}
                 </div>
                 ${sidebarHTML}
             </div>
