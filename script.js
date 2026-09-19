@@ -801,8 +801,8 @@ async function loadPremiumCategories(skipPush = false) {
                             ` : ''}
                         </div>
                         <div class="node-stats">
-                            <span>المواضيع: <strong>${topics}</strong></span>
-                            <span>المشاركات: <strong>${posts}</strong></span>
+                            <span class="stat-box">المواضيع: <strong>${topics}</strong></span>
+                            <span class="stat-box">المشاركات: <strong>${posts}</strong></span>
                         </div>
                         <div class="node-lastpost" style="width: 290px; justify-content: ${isCategoryEmpty ? 'center' : 'flex-start'};">
                             ${lastPostBlock}
@@ -825,7 +825,7 @@ async function loadPremiumCategories(skipPush = false) {
         
         let sidebarHTML = `
             <div class="sidebar-wrapper">
-                <div class="sidebar-block glass-panel">
+                <div class="sidebar-block">
                     <h3 class="sidebar-header"><i class="fa--xf fas fa-users"></i> الأعضاء المتواجدون الآن</h3>
                     <div class="sidebar-content">
                         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 5px;">
@@ -834,7 +834,7 @@ async function loadPremiumCategories(skipPush = false) {
                         <a href="javascript:void(0)" class="username" style="color: var(--primary); font-weight: bold; font-size: 13px;">${window.currentUserIsGuest ? 'زائر' : 'عضو'}</a>
                     </div>
                 </div>
-                <div class="sidebar-block glass-panel">
+                <div class="sidebar-block">
                     <h3 class="sidebar-header"><i class="fa--xf fas fa-chart-bar"></i> إحصائيات المنتدى</h3>
                     <div class="sidebar-content">
                         <div class="stat-row"><span>المواضيع</span><strong>0</strong></div>
