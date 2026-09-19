@@ -4066,3 +4066,204 @@ ul.radio-group li label:has(input:checked) {
     box-shadow: 0 0 15px var(--primary);
     transition: box-shadow 0.3s ease;
 }
+
+/* --- Layout Main & Sidebar --- */
+.layout-main {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+.layout-content {
+    flex: 1;
+    min-width: 0;
+}
+.sidebar-wrapper {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+@media (max-width: 900px) {
+    .layout-main {
+        flex-direction: column;
+    }
+    .sidebar-wrapper {
+        width: 100%;
+    }
+}
+
+/* --- Glass Panels --- */
+.glass-panel, .category-block, .sidebar-block {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--item-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px var(--shadow-color);
+}
+
+/* --- Category Block --- */
+.category-header {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--primary);
+    border-bottom: 1px solid var(--item-border);
+    transition: var(--trans);
+}
+.category-header:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* --- Node Row --- */
+.node-list {
+    display: flex;
+    flex-direction: column;
+}
+.node-row {
+    display: flex;
+    padding: 20px;
+    gap: 15px;
+    border-bottom: 1px solid var(--item-border);
+    transition: var(--trans);
+    align-items: center;
+}
+.node-row:last-child {
+    border-bottom: none;
+}
+.node-row:hover {
+    background: var(--surface-hover);
+}
+
+.node-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: var(--bg-tint);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--primary);
+    border: 1px solid var(--primary-glow);
+    flex-shrink: 0;
+    transition: var(--trans);
+}
+.node-row:hover .node-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.node-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.node-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-strong);
+}
+.node-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.node-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+    min-width: 100px;
+    text-align: right;
+}
+.node-stats strong {
+    color: var(--text-strong);
+}
+
+.node-lastpost {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    border-right: 1px dashed var(--item-border);
+    padding-right: 15px;
+}
+
+/* --- Subforums --- */
+.subforums-wrapper {
+    margin-top: 8px;
+    font-size: 12px;
+}
+.subforums-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    transition: var(--trans);
+}
+.subforums-label:hover {
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text);
+}
+.subforums-list {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-left: 10px;
+}
+.subforum-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--bg-tint);
+    border: 1px solid var(--item-border);
+    color: var(--text-strong);
+    transition: var(--trans);
+}
+.subforum-link:hover {
+    background: var(--primary);
+    color: #000;
+    border-color: var(--primary);
+}
+
+/* --- Sidebar Blocks --- */
+.sidebar-header {
+    padding: 15px;
+    font-size: 15px;
+    font-weight: 800;
+    border-bottom: 1px dashed var(--item-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-strong);
+}
+.sidebar-content {
+    padding: 15px;
+}
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 13px;
+    color: var(--text-muted);
+}
+.stat-row:last-child {
+    border-bottom: none;
+}
+.stat-row strong {
+    color: var(--text-strong);
+}
